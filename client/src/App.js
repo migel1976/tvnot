@@ -1,36 +1,43 @@
 import React, { Component } from 'react';
 import ReactDataGrid from 'react-data-grid';
 
-function createRows() {
-    const rows = [];
-    const row = { topic: '/a', message: 'Hello',
-		  children: [{topic: '/a/b', message: 'Hello Hello', children: [
-		      {topic: '/a/b/c', message: 'Hello Hello Hello'}]}]};
-    rows.push(row);
-    const row1 = { topic: '/B', message: 'Hello',
-		  children: [{topic: '/B/b', message: 'Hello Hello', children: [
-		      {topic: '/B/b/c', message: 'Hello Hello Hello'}]}]};
-    
-    rows.push(row1);
-    return rows;
-}
+//function createRows() {
+//    const rows = [];
+//    const row = { topic: '/a', message: 'Hello',
+//		  children: [{topic: '/a/b', message: 'Hello Hello', children: [
+//		      {topic: '/a/b/c', message: 'Hello Hello Hello'}]}]};
+//    rows.push(row);
+//    const row1 = { topic: '/B', message: 'Hello',
+//		  children: [{topic: '/B/b', message: 'Hello Hello', children: [
+//		      {topic: '/B/b/c', message: 'Hello Hello Hello'}]}]};
+//    
+//    rows.push(row1);
+//    return rows;
+//}
 
 function createRowsFromTopics(topics) {
     return Object.entries(topics).map(([k, v]) => {
-	return { topic: v[0], message: v[1] };
+	return { topic: v[0], message: {text: v[1], bg: 'lightgreen'} };
     });
 }
 
+const CellColorFormatter = ({value}) => {
+    var bg = value.bg;
+    var label = value.text;
+    //console.log("CellColorFormatter:", value);
+    return (<div style={{backgroundColor:bg}}>{label}</div>);    
+}
 
 const columns = [
-  {
-    key: 'topic',
-    name: 'topic'
-  },
-  {
-    key: 'message',
-    name: 'message'
-  }
+    {
+	key: 'topic',
+	name: 'topic'
+    },
+    {
+	key: 'message',
+	name: 'message',
+	formatter: CellColorFormatter 
+    }
 ];
 
 
@@ -44,7 +51,6 @@ class App extends Component {
     setSocketListeners () {
 	this.props.socket.on('topics', (topics) => {
 	    console.log("received topcis", topics);	    
-	    //this.setState({topics: topics});
 	    const expanded = { ...this.state.expanded };
 	    const rows = createRowsFromTopics(topics);
 	    this.setState({expanded, rows});
