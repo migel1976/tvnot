@@ -1,26 +1,20 @@
 from flask import Flask
 from flask_socketio import SocketIO, emit
-import redis
-import threading
+import threading, time
 
 app = Flask(__name__, static_folder='./client/build/static')
 app.config['SECRET_KEY'] = 'development key'
 socket = SocketIO(app)
 
 def monitor():
-    r = redis.Redis()
-
-    channels = ['message_list', 'message_list_2']
-    p = r.pubsub()
-    p.subscribe(channels)
-
-    print 'monitoring channels', channels
-
+    topics_fmt = [('/a', "Hello{c}"), ("/a/b", "Hello2{c}"), ("/b", "By"), ("/b/b", "By2")]
+    c = 0
     while 1:
-        m = p.get_message()
-        if m:
-            print m
-            socket.emit('key_status', {'channel': m['channel'], 'status': m['data']}, broadcast=True)
+        topics = [(f[0], f[1].format(c = c)) for f in topics_fmt]
+        print topics
+        socket.emit('topics', topics, broadcast=True)
+        time.sleep(3)
+        c += 1
             
 @app.route('/')
 def serve_static_index():
@@ -28,10 +22,9 @@ def serve_static_index():
 
 @socket.on('connect')
 def on_connect():
-    print('user connected')
-    emit('key_status', {'status': 'INIT'}, broadcast=True)
+    print('user connected')    
+    #emit('topics', {'/status': 'INIT'}, broadcast=True)
     
 if __name__ == "__main__":
     socket.start_background_task(monitor)
     socket.run(app, host = "0.0.0.0", port = 8080, debug = True)
-    
