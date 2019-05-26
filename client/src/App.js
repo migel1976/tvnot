@@ -101,31 +101,17 @@ class App extends Component {
     };
 
     render () {
-	//var topics = this.state.topics;
-	//var rows = Object.entries(topics).map(([k, v]) => {
-	//    return (<tr><td>{v[0]}</td><td>{v[1]}</td></tr>);
-	//});
-	//return (
-	//    <div>
-	//	<table>
-	//	<th><td>K</td><td>V</td></th>
-	//	{rows}
-	//	</table>
-	//	</div>
-	//	
-	//);
 	return (
-      <ReactDataGrid
-        enableCellSelect
-        columns={columns}
-        rowGetter={this.getRows}
-        rowsCount={this.state.rows.length}
-        getSubRowDetails={this.getSubRowDetails}
-        minHeight={500}
-        onCellExpand={this.onCellExpand}
-      />
-	);
-
+		<ReactDataGrid
+            enableCellSelect
+            columns={columns}
+            rowGetter={this.getRows}
+            rowsCount={this.state.rows.length}
+            getSubRowDetails={this.getSubRowDetails}
+            minHeight={500}
+            onCellExpand={this.onCellExpand}
+		/>
+	);	
     }
 };	    
 
