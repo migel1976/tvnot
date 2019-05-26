@@ -16,8 +16,10 @@ import ReactDataGrid from 'react-data-grid';
 //}
 
 function createRowsFromTopics(topics) {
-    return Object.entries(topics).map(([k, v]) => {
-	return { topic: v[0], message: {text: v[1], bg: 'lightgreen'} };
+    return Object.entries(topics).map(topic_el => {
+	var topic_message = topic_el[1];
+	var actual_bg = topic_message.bg === '' ? 'white' : topic_message.bg;
+	return { topic: topic_message.topic, message: {text: topic_message.message, bg: actual_bg} };
     });
 }
 
