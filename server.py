@@ -13,9 +13,9 @@ def monitor():
         #topics = [(f[0], f[1].format(c = c)) for f in topics_fmt]
         topics = []
         topics.append({'topic': '/a', 'message': {'text': "Hello{c}".format(c = c), 'bg': 'lightgreen'},
-                       'status': {'text': 'OK', 'bg': 'white'}})
-        topics.append({'topic': '/a/b', 'message': {'text': "Hello2{c}".format(c = c), 'bg': 'white'}, 'status': {'text': 'OK', 'bg': ''}})
-        topics.append({'topic': '/b', 'message': {'text': "By".format(c = c), 'bg': ''}, 'status': {'text': 'OK', 'bg': ''}})
+                       'status': {'text': 'OK', 'bg': 'lightblue'}})
+        topics.append({'topic': '/a/b', 'message': {'text': "Hello2{c}".format(c = c), 'bg': None}, 'status': {'text': 'OK'}})
+        topics.append({'topic': '/b', 'message': {'text': "By".format(c = c), 'bg': ''}, 'status': {'text': 'OK'}})
         topics.append({'topic': '/b/b', 'message': {'text': "By2".format(c = c), 'bg': 'red'}, 'status': {'text': 'FAIL', 'bg': 'orange'}})
         #print topics
         socket.emit('topics', topics, broadcast=True)

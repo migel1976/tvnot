@@ -22,8 +22,13 @@ function createRowsFromTopicMessages(topic_messages) {
     });
 }
 
-const CellTextColorFormatter = (cell) => {
-    var bg = cell.value.bg === '' ? 'lightgray' : cell.value.bg;
+const CellTextColorFormatter = (cell) => {    
+    var bg = null;
+    if (!cell.value.bg || cell.value.bg == '') {
+	bg = 'white';
+    } else {
+	bg = cell.value.bg;
+    }
     var label = cell.value.text;
     //console.log("CellColorFormatter:", value);
     return (<div style={{backgroundColor:bg}}>{label}</div>);    
