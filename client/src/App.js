@@ -15,17 +15,16 @@ import ReactDataGrid from 'react-data-grid';
 //    return rows;
 //}
 
-function createRowsFromTopics(topics) {
-    return Object.entries(topics).map(topic_el => {
-	var topic_message = topic_el[1];
-	var actual_bg = topic_message.bg === '' ? 'white' : topic_message.bg;
-	return { topic: topic_message.topic, message: {text: topic_message.message, bg: actual_bg} };
+function createRowsFromTopicMessages(topic_messages) {
+    return Object.entries(topic_messages).map(topic_message_el => {
+	var topic_message = topic_message_el[1];
+	return topic_message;
     });
 }
 
-const CellColorFormatter = ({value}) => {
-    var bg = value.bg;
-    var label = value.text;
+const CellTextColorFormatter = (cell) => {
+    var bg = cell.value.bg === '' ? 'lightgray' : cell.value.bg;
+    var label = cell.value.text;
     //console.log("CellColorFormatter:", value);
     return (<div style={{backgroundColor:bg}}>{label}</div>);    
 }
@@ -36,9 +35,14 @@ const columns = [
 	name: 'topic'
     },
     {
+	key: 'status',
+	name: 'Status',
+	formatter: CellTextColorFormatter 
+    },
+    {
 	key: 'message',
 	name: 'message',
-	formatter: CellColorFormatter 
+	formatter: CellTextColorFormatter 
     }
 ];
 
@@ -46,15 +50,15 @@ const columns = [
 class App extends Component {
     constructor (props) {
 	super(props);
-	const rows = createRowsFromTopics([]);
+	const rows = createRowsFromTopicMessages([]);
 	this.state = { expanded: {}, rows };
     }
     
     setSocketListeners () {
-	this.props.socket.on('topics', (topics) => {
-	    console.log("received topcis", topics);	    
+	this.props.socket.on('topics', (topic_messages) => {
+	    console.log("received", topic_messages);
 	    const expanded = { ...this.state.expanded };
-	    const rows = createRowsFromTopics(topics);
+	    const rows = createRowsFromTopicMessages(topic_messages);
 	    this.setState({expanded, rows});
 	});
     }
