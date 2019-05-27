@@ -24,7 +24,7 @@ function createRowsFromTopicMessages(topic_messages) {
 
 const CellTextColorFormatter = (cell) => {    
     var bg = null;
-    if (!cell.value.bg || cell.value.bg == '') {
+    if (!cell.value.bg || cell.value.bg === '') {
 	bg = 'white';
     } else {
 	bg = cell.value.bg;
