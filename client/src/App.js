@@ -14,11 +14,14 @@ import {
 //
 // ll is subpath of rr. I.e ll is parent of rr
 //
-// NOTE this is wrong implementation: /a /a/c/cc gives true: should give false
+// NOTE right implementation should give /a /a/c/cc give false, /a /a/c should give true
+//
 function subpath_of(ll, rr) {
     var ret = null;
     if (ll) {
-	ret = ll.length < rr.length && rr.indexOf(ll) === 0;
+	//console.log("ll rr rr-1:", ll, rr, rr.split("/").splice(-1,1).join("/"));
+	let rrm1 = rr.split("/"); rrm1.pop();
+	ret = ll.split("/").join("/") === rrm1.join("/");
     } else {
 	ret = rr.split("/").length === 2;
     }
@@ -31,7 +34,7 @@ const getChildRows = (row, rootRows) => {
     //return childRows.length ? childRows : null;
     const row_topic = row ? row.topic : null
     const childRows = rootRows.filter(r => subpath_of(row_topic, r.topic))
-    console.log("getChildRows:", childRows);
+    //console.log("getChildRows:", childRows);
     return childRows.length ? childRows : null;
 
     //console.log("getChildRows:", row, rootRows);

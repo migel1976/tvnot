@@ -17,6 +17,8 @@ def monitor():
         topics.append({'topic': '/a/c/cc', 'message': "Hello2{c}".format(c = c), 'status': 'OK'})
         topics.append({'topic': '/b', 'message': "By".format(c = c), 'status': 'OK'})
         topics.append({'topic': '/b/b', 'message': "By2".format(c = c), 'status': 'FAIL'})
+        topics.append({'topic': '/b/A', 'message': "By22".format(c = c), 'status': 'FAIL'})
+        topics.append({'topic': '/b/A/b', 'message': "By22".format(c = c), 'status': 'FAIL'})
         #print topics
         socket.emit('topics', topics, broadcast=True)
         time.sleep(3)
