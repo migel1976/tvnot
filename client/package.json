@@ -3,12 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@devexpress/dx-react-core": "^1.11.0",
+    "@devexpress/dx-react-grid": "^1.11.0",
+    "@devexpress/dx-react-grid-bootstrap4": "^1.11.0",
     "react": "^16.8.6",
-    "react-data-grid": "^6.1.0",
     "react-dom": "^16.8.6",
     "react-scripts": "3.0.0",
-    "socket.io-client": "^2.2.0",
-    "typescript": "^3.4.5"
+    "reactstrap": "^8.0.0",
+    "socket.io-client": "^2.2.0"
   },
   "scripts": {
     "start": "react-scripts start",
