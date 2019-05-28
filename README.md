@@ -1,2 +1,3 @@
 # tvnot
-react + flask + redis
+react + devexress grid treeview mode + flask
+
