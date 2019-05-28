@@ -7,13 +7,14 @@ app.config['SECRET_KEY'] = 'development key'
 socket = SocketIO(app)
 
 def monitor():
-    #topics = []{'topic: '/a', 'message': "Hello{c}"), ("/a/b", "Hello2{c}"), ("/b", "By"), ("/b/b", "By2")]
     c = 0
     while 1:
         #topics = [(f[0], f[1].format(c = c)) for f in topics_fmt]
         topics = []
         topics.append({'topic': '/a', 'message': "Hello{c}".format(c = c), 'status': 'OK'})
         topics.append({'topic': '/a/b', 'message': "Hello2{c}".format(c = c), 'status': 'OK'})
+        topics.append({'topic': '/a/c', 'message': "Hello2{c}".format(c = c), 'status': 'OK'})
+        topics.append({'topic': '/a/c/cc', 'message': "Hello2{c}".format(c = c), 'status': 'OK'})
         topics.append({'topic': '/b', 'message': "By".format(c = c), 'status': 'OK'})
         topics.append({'topic': '/b/b', 'message': "By2".format(c = c), 'status': 'FAIL'})
         #print topics
