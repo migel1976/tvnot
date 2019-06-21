@@ -24,10 +24,6 @@ def monitor():
         time.sleep(3)
         c += 1
             
-@app.route('/')
-def serve_static_index():
-    return send_from_directory('./client/build/', 'index.html')
-
 @socket.on('connect')
 def on_connect():
     print('user connected')    
