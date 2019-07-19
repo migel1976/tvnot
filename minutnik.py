@@ -1,14 +1,40 @@
 import sys, glob, os, time, pandas as pd
 
-def tail_file_events(fn, offset, buf_len):
+max_buf_len = 50 * 1024
+all_keywords = ['nb:', 'error', 'exception']
+max_kw_len = max(map(len, all_keywords))
+
+# we need to rescan last bytes of the file before offset
+# since some partial keyword may be left there undetected.
+# longest keyword will determine how many bytes before given *offset*
+# we should read. Then for each keyword will adjust starting point to
+# look for keyword since length differences.
+# E.g. we had to read 8 bytes before offset due to keyword 'exception'
+# then we need to start with 4 bytes buffer offset for keyword 'error'
+#
+# Mkw_adj_offset -- starting point of buf being read
+# kw_adj_offset -- offset required for given keyword
+# starting location for keyword scan: kw_adj_offset - Mkw_adj_offset
+#
+def tail_file_events(fn, begin_offset, file_size):
     found = False
-    with open(fn, "r") as fd:
-        fd.seek(offset, os.SEEK_SET)
-        buf = fd.read(buf_len).lower()
-        for keyword in ['nb:', 'error', 'exception']:
-            if keyword in buf:
-                found = True
-                break
+    with open(fn, "rb") as fd:
+        offset = begin_offset
+
+        while offset < file_size:
+            Mkw_adj_offset = max(0, offset - (max_kw_len - 1))
+            fd.seek(Mkw_adj_offset, os.SEEK_SET)
+            buf = fd.read(max_buf_len).lower()
+            attained_offset = fd.tell()
+            
+            for keyword in all_keywords:
+                kw_adj_offset = max(0, offset - (len(keyword) - 1))
+                buf_offset = kw_adj_offset - Mkw_adj_offset
+                if keyword in buf[buf_offset:]:
+                    found = True
+                    break
+
+            offset = attained_offset
 
     return found
 
@@ -19,7 +45,6 @@ if __name__ == "__main__":
     dir_ = os.path.expanduser(sys.argv[1])
     dir_glob_mask = os.path.join(dir_, "*.log")
     dir_listing_fn = os.path.join(dir_, "listing.csv")
-    max_buf_len = 50 * 1024
     max_fsz_growth_speed = 30 * 1024
     now = time.time()
 
@@ -42,7 +67,7 @@ if __name__ == "__main__":
             continue
 
         if not file_ in old_f_listing.index:
-            found = tail_file_events(file_, 0, max_buf_len)
+            found = tail_file_events(file_, 0, fsize)
             if found: events[file_] = "something interesting found"
         else:
             old_size = old_f_listing.loc[file_, 'fsize']
@@ -59,7 +84,7 @@ if __name__ == "__main__":
                     if now != old_mtime and (fsize - old_size) / (now - old_mtime) > max_fsz_growth_speed:
                         events[file_] = "file grows too fast"
                     else:
-                        found = tail_file_events(file_, old_size, min(fsize - old_size, max_buf_len))
+                        found = tail_file_events(file_, old_size, fsize)
                         if found: events[file_] = "something interesting found"
 
     if len(events):
